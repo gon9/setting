@@ -1,0 +1,65 @@
+{
+  "title": "CapsLock to Control in Terminal, Command elsewhere",
+  "rules": [
+    {
+      "description": "CapsLock to Control in Terminal apps",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "caps_lock"
+          },
+          "to": [
+            {
+              "key_code": "left_control"
+            }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [
+                "^com\\.apple\\.Terminal$",
+                "^com\\.googlecode\\.iterm2$",
+                "^io\\.alacritty$",
+                "^net\\.kovidgoyal\\.kitty$",
+                "^org\\.alacritty$",
+                "^com\\.github\\.wez\\.wezterm$",
+                "^dev\\.warp\\.Warp-Stable$"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "CapsLock to Command (except in Terminal apps)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "caps_lock"
+          },
+          "to": [
+            {
+              "key_code": "left_command"
+            }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_unless",
+              "bundle_identifiers": [
+                "^com\\.apple\\.Terminal$",
+                "^com\\.googlecode\\.iterm2$",
+                "^io\\.alacritty$",
+                "^net\\.kovidgoyal\\.kitty$",
+                "^org\\.alacritty$",
+                "^com\\.github\\.wez\\.wezterm$",
+                "^dev\\.warp\\.Warp-Stable$"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

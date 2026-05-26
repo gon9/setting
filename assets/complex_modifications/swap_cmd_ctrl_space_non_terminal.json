@@ -1,0 +1,63 @@
+{
+  "title": "Swap Cmd+Space and Ctrl+Space (left only, except in Terminal)",
+  "rules": [
+    {
+      "description": "⌘ (left) Space → ⌃ (left) Space (except in Terminal)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "spacebar",
+            "modifiers": { "mandatory": ["left_command"], "optional": ["any"] }
+          },
+          "to": [
+            { "key_code": "spacebar", "modifiers": ["left_control"] }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_unless",
+              "bundle_identifiers": [
+                "^com\\.apple\\.Terminal$",
+                "^com\\.googlecode\\.iterm2$",
+                "^io\\.alacritty$",
+                "^net\\.kovidgoyal\\.kitty$",
+                "^org\\.alacritty$",
+                "^com\\.github\\.wez\\.wezterm$",
+                "^dev\\.warp\\.Warp-Stable$"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "⌃ (left) Space → ⌘ (left) Space (except in Terminal)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "spacebar",
+            "modifiers": { "mandatory": ["left_control"], "optional": ["any"] }
+          },
+          "to": [
+            { "key_code": "spacebar", "modifiers": ["left_command"] }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_unless",
+              "bundle_identifiers": [
+                "^com\\.apple\\.Terminal$",
+                "^com\\.googlecode\\.iterm2$",
+                "^io\\.alacritty$",
+                "^net\\.kovidgoyal\\.kitty$",
+                "^org\\.alacritty$",
+                "^com\\.github\\.wez\\.wezterm$",
+                "^dev\\.warp\\.Warp-Stable$"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
