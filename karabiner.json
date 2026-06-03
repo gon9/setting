@@ -68,13 +68,13 @@
                         ]
                     },
                     {
-                        "description": "Razer: Ctrl → Command (except in Terminal)",
+                        "description": "External non-Apple keyboard: Ctrl → Command (except in Terminal)",
                         "manipulators": [
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "vendor_id": 5426 }],
-                                        "type": "device_if"
+                                        "identifiers": [{ "vendor_id": 1452 }],
+                                        "type": "device_unless"
                                     },
                                     {
                                         "bundle_identifiers": [
@@ -99,8 +99,8 @@
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "vendor_id": 5426 }],
-                                        "type": "device_if"
+                                        "identifiers": [{ "vendor_id": 1452 }],
+                                        "type": "device_unless"
                                     },
                                     {
                                         "bundle_identifiers": [
