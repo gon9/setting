@@ -12,7 +12,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC="$SCRIPT_DIR/tmux.conf"
 DEST="$HOME/.tmux.conf"
-PLUGIN_DIR="$HOME/.config/tmux/plugins/dracula"
+# tmux.conf が run で参照するパス（.../dracula/tmux/dracula.tmux）に合わせる
+PLUGIN_DIR="$HOME/.config/tmux/plugins/dracula/tmux"
 DRACULA_REPO="https://github.com/dracula/tmux.git"
 
 # 1. tmux.conf をシンボリックリンク
@@ -25,11 +26,11 @@ ln -sfn "$SRC" "$DEST"
 echo "リンク作成: $DEST -> $SRC"
 
 # 2. Dracula テーマ（tmux.conf が run で参照）
-if [ -d "$PLUGIN_DIR/.git" ]; then
-  echo "Dracula テーマを更新します: $PLUGIN_DIR"
-  git -C "$PLUGIN_DIR" pull --ff-only
+if [ -e "$PLUGIN_DIR/dracula.tmux" ]; then
+  echo "Dracula テーマは既に存在します: $PLUGIN_DIR"
 else
   echo "Dracula テーマを取得します: $PLUGIN_DIR"
+  mkdir -p "$(dirname "$PLUGIN_DIR")"
   git clone --depth 1 "$DRACULA_REPO" "$PLUGIN_DIR"
 fi
 
