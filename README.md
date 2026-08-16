@@ -5,6 +5,7 @@ Mac のローカル設定リポジトリ。
 - `karabiner.json` / `assets/` … Karabiner-Elements 設定
 - `tmux/` … tmux 設定
 - `claude/` … Claude Code のステータスライン設定
+- `codex/` … Codex CLI のステータスライン設定
 
 ## Karabiner-Elements
 
@@ -88,3 +89,37 @@ Claude Code のステータスラインに、使用中のモデル名・作業�
   `tput cols` は使えない）。狭いときはブランチ名を省略する
 - 不正な JSON や空入力でも必ず何か出力して `exit 0` する
   （非ゼロ終了・無出力だとステータスラインが空白になる仕様のため）
+
+## Codex CLI
+
+Codex CLI のフッターに、Claude Code と対応するセッション情報を表示する。
+
+```
+gpt-5.6-sol medium · owlclaw · main · Context 12% used · Ask for approval · Fast off
+```
+
+反映スクリプトを実行する:
+
+```bash
+~/.config/karabiner/codex/install.sh
+```
+
+スクリプトは `~/.codex/config.toml` の既存設定を保持したまま、`[tui]` の
+`status_line` だけを追加または更新する。変更前の設定は
+`config.toml.backup.<日時>` に退避する。反映後、新しく起動した Codex セッションから
+表示が有効になる。
+
+### 表示内容
+
+| 項目 | Codex の識別子 |
+|------|----------------|
+| モデル名と推論レベル | `model-with-reasoning` |
+| プロジェクト名 | `project` |
+| git ブランチ | `git-branch` |
+| コンテキスト使用率 | `context-used` |
+| 承認モード | `approval-mode` |
+| Fast モード | `fast-mode` |
+
+Codex CLI のステータスラインはネイティブ項目の順序指定であり、Claude Code の
+コマンド型ステータスラインとは異なる。現行の `git-branch` はワークツリーの
+未コミット状態を `*` では表示しない。
