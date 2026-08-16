@@ -29,8 +29,8 @@ git clone https://github.com/gon9/setting.git ~/.config/karabiner
 
 1. `tmux/tmux.conf` を `~/.tmux.conf` にシンボリックリンク
    （既存の実ファイルがある場合は `.backup.<日時>` に退避）
-2. Dracula テーマプラグイン（サードパーティ / MIT）を
-   `~/.config/tmux/plugins/dracula` に `git clone`
+2. Dracula テーマ、tmux-resurrect、tmux-continuumを
+   `~/.config/tmux/plugins/` 以下に `git clone`
 
 反映後、tmux 内で `prefix + r`（もしくは `tmux source-file ~/.tmux.conf`）で再読込する。
 
@@ -40,6 +40,9 @@ git clone https://github.com/gon9/setting.git ~/.config/karabiner
 - 設定再読込: `prefix + r`
 - ステータスライン: Dracula（`cwd` 表示、高コントラスト）
 - ウィンドウ名を「フォルダ:フォアグラウンドコマンド」で自動更新
+- セッション保存/復元: `prefix + Ctrl-s` / `prefix + Ctrl-r`
+- tmux-continuum: 5分ごとに自動保存し、tmux起動時に自動復元
+- 復元対象: ペイン内容とnvimセッション
 
 ## Claude Code
 
