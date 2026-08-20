@@ -43,6 +43,7 @@ git clone https://github.com/gon9/setting.git ~/.config/karabiner
 - セッション保存/復元: `prefix + Ctrl-s` / `prefix + Ctrl-r`
 - tmux-continuum: 5分ごとに自動保存し、tmux起動時に自動復元
 - 復元対象: ペイン内容とnvimセッション
+- `allow-passthrough on`: 組み込み通知とプログレスバーを外側のターミナルへ通す
 
 ## Claude Code
 
