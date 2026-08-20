@@ -8,15 +8,39 @@ Mac のローカル設定リポジトリ。
 - `codex/` … Codex CLI のステータスライン設定
 - `notify/` … Claude Code / Codex CLI の macOS 通知設定
 
-## Karabiner-Elements
+## 新しい Mac のセットアップ
 
-別の Mac に適用する:
+上から順に実行する。各 `install.sh` は既存設定を保持し、何度実行しても重複しない。
 
 ```bash
+# 前提
+brew install jq
+
+# 1. clone（Karabiner の設定ディレクトリがそのままリポジトリになる）
 git clone https://github.com/gon9/setting.git ~/.config/karabiner
+
+# 2. 各ツールへ反映
+~/.config/karabiner/tmux/install.sh      # tmux.conf + プラグイン
+~/.config/karabiner/claude/install.sh    # Claude Code のステータスライン
+~/.config/karabiner/codex/install.sh     # Codex CLI のステータスライン
+~/.config/karabiner/notify/install.sh    # Claude Code / Codex の通知
 ```
 
-その後、Karabiner-Elements を再起動すると設定が反映される。
+リポジトリでは持ち回せず、Mac ごとに一度だけ手で必要な作業:
+
+1. Karabiner-Elements を再起動する
+2. tmux 内で `prefix + r`（または `tmux source-file ~/.tmux.conf`）で再読込する
+3. `brew install terminal-notifier`（任意。通知にサウンドとサブタイトルが付く）
+4. **システム設定 > 通知** で terminal-notifier（未インストールなら Script Editor）の
+   通知を許可する。「通知の要約」と集中モードも確認する。詳細は「通知」の節を参照
+5. Claude Code と Codex を再起動する
+
+各ツールの詳細は以下の節を参照。
+
+## Karabiner-Elements
+
+clone 先が Karabiner-Elements の設定ディレクトリそのものなので、反映スクリプトはない。
+Karabiner-Elements を再起動すると設定が反映される。
 
 ## tmux
 
