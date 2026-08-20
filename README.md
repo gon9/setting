@@ -6,6 +6,7 @@ Mac のローカル設定リポジトリ。
 - `tmux/` … tmux 設定
 - `claude/` … Claude Code のステータスライン設定
 - `codex/` … Codex CLI のステータスライン設定
+- `notify/` … Claude Code / Codex CLI の macOS 通知設定
 
 ## Karabiner-Elements
 
@@ -127,3 +128,59 @@ gpt-5.6-sol medium · owlclaw · main · Context 12% used · Ask for approval ·
 Codex CLI のステータスラインはネイティブ項目の順序指定であり、Claude Code の
 コマンド型ステータスラインとは異なる。現行の `git-branch` はワークツリーの
 未コミット状態を `*` では表示しない。
+
+## 通知（Claude Code / Codex CLI）
+
+Claude Code と Codex CLI が「完了した」「許可を待っている」ときに macOS の通知を出す。
+別ウィンドウで作業していてもターミナルを覗きに行かずに済む。
+
+反映スクリプトを実行する:
+
+```bash
+~/.config/karabiner/notify/install.sh
+```
+
+スクリプトが行うこと:
+
+1. `notify/agent-notify` と `notify/agent-notify-codex` を `~/.local/bin/` にシンボリックリンク
+   （既存の実ファイルがある場合は `.backup.<日時>` に退避）
+2. `~/.claude/settings.json` の `hooks.Notification` / `hooks.Stop` を登録
+3. `~/.codex/config.toml` の `[tui]` 通知設定と `notify` を登録
+
+`jq` が必要（`brew install jq`）。何度実行しても重複しない。
+
+### 手動で必要な設定
+
+macOS の通知許可はリポジトリで持ち回せないので、Mac ごとに一度だけ設定する:
+
+1. `brew install terminal-notifier`（任意。サウンドとサブタイトルが付く。
+   未インストールなら `osascript` にフォールバックし、通知元は Script Editor になる）
+2. 通知テスト: `~/.local/bin/agent-notify "Claude Code" "テスト" "通知が出れば成功"`
+3. ポップアップが出ないときは **システム設定 > 通知** で terminal-notifier
+   （または Script Editor）の通知を許可する。「通知の要約」と集中モードも確認する
+4. Claude Code と Codex を再起動する
+
+### 発火タイミング
+
+| CLI | イベント | いつ鳴るか |
+|-----|----------|------------|
+| Claude Code | `Stop` フック | 応答が終わるたびに即時 |
+| Claude Code | `Notification` フック（`permission_prompt`） | 許可プロンプトが出て約6秒、キー入力がなければ |
+| Claude Code | `Notification` フック（`idle_prompt`） | 応答完了から約60秒、キー入力がなければ |
+| Codex CLI | `[tui] notifications` | ターミナルが非フォアグラウンドのときだけ（`notification_condition = "unfocused"`） |
+| Codex CLI | `notify` | ターン完了時に外部コマンドへ JSON を渡す |
+
+離席時は Claude Code の `Stop` と `idle_prompt` が両方鳴る。完了通知を離席時だけに
+絞りたい場合は `hooks.Stop` を外す（`idle_prompt` が完了通知を兼ねる）。
+
+### 設計メモ
+
+- `settings.json` には `"$HOME/.local/bin/agent-notify"` と書く。フックは `sh -c` 経由で
+  実行されるので `$HOME` が展開され、ユーザ名の違う Mac でも設定ファイルがそのまま動く
+- tmux 経由だと Claude Code / Codex の**組み込み通知**（エスケープシーケンス方式）は
+  握り潰される。フックは別プロセスを起動するので tmux を貫通する。
+  組み込み通知も使いたい場合は `tmux/tmux.conf` の `allow-passthrough on` が必要
+- `config.toml` の `notify` は既に別のコマンドが入っていれば上書きしない。
+  Codex Computer Use が自前のラッパを噛ませていることがあり、壊すと困るため
+- `agent-notify-codex` は同じディレクトリの `agent-notify` を呼ぶので、
+  2つは必ず同じ場所に置く

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+payload="${1:-{}}"
+script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+previous_config="${XDG_CONFIG_HOME:-$HOME/.config}/agent-notifications/codex-previous-notify.json"
+
+if [ -s "$previous_config" ] && command -v python3 >/dev/null 2>&1; then
+    python3 - "$previous_config" "$payload" <<'PY' >/dev/null 2>&1 &
+import json
+import subprocess
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as handle:
+    command = json.load(handle)
+if isinstance(command, list) and command:
+    subprocess.run([*command, sys.argv[2]], check=False)
+PY
+fi
+
+event_type="turn-complete"
+message="ターンが完了しました"
+if command -v python3 >/dev/null 2>&1; then
+    parsed="$(printf '%s' "$payload" | python3 -c '
+import json
+import sys
+
+try:
+    data = json.load(sys.stdin)
+except Exception:
+    raise SystemExit(0)
+event_type = str(data.get("type") or "turn-complete")
+message = " ".join(str(data.get("last-assistant-message") or data.get("message") or "ターンが完了しました").split())
+print(event_type)
+print(message[:117] + "..." if len(message) > 120 else message)
+' 2>/dev/null)"
+    if [ -n "$parsed" ]; then
+        event_type="$(printf '%s' "$parsed" | sed -n '1p')"
+        message="$(printf '%s' "$parsed" | sed -n '2p')"
+    fi
+fi
+
+exec "$script_dir/agent-notify" "Codex" "$event_type" "$message"
